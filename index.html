@@ -175,6 +175,7 @@
 <body>
   <div id="root"></div>
 
+  <script src="teachers-data.js"></script>
 
   <script type="text/babel" data-presets="react">
 
@@ -1136,7 +1137,21 @@ const TEACHER_PHOTOS = [
   "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=85",
 ];
 
+function TeacherInitial({ teacher, className = "", style = {} }) {
+  const initial = (teacher.firstName || teacher.surname || "E").charAt(0).toUpperCase();
+  return (
+    <div className={"w-full h-full grid place-items-center " + className}
+         style={{ background: "linear-gradient(135deg, var(--ink), var(--accent))", ...style }}>
+      <span className="text-[clamp(64px,10vw,160px)] italic"
+            style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--gold)", fontWeight: 500 }}>
+        {initial}
+      </span>
+    </div>
+  );
+}
+
 function Teachers({ t }) {
+  const list = (window.TEACHERS || []);
   return (
     <section id="teachers" className="py-24 lg:py-36" style={{ background: "var(--band)" }}>
       <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
@@ -1154,43 +1169,53 @@ function Teachers({ t }) {
           </Reveal>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {t.teachers.list.map((tch, i) => (
-            <Reveal key={i} delay={i * 90}>
-              <article className="group rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2" style={{ background: "var(--card)", border: "1px solid var(--hairline)" }}>
-                <div className="aspect-[3/4] relative overflow-hidden">
-                  <img src={TEACHER_PHOTOS[i]} alt={tch.name} className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-105" />
-                  <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 40%, rgba(10,15,30,0.85) 100%)" }} />
-                  <div className="absolute left-5 top-5">
-                    <span className="px-3 h-7 inline-flex items-center rounded-full text-[10px] uppercase tracking-[0.2em] font-medium backdrop-blur" style={{ background: "var(--gold)", color: "#1a1408" }}>
-                      {tch.subj}
-                    </span>
-                  </div>
-                  <div className="absolute left-5 right-5 bottom-5 text-white">
-                    <h3 className="text-[24px] leading-[1.1]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>{tch.name}</h3>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-[13px] leading-[1.65]" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>{tch.bio}</p>
-                  <ul className="mt-5 space-y-2">
-                    {tch.marks.map((m, j) => (
-                      <li key={j} className="flex items-center gap-2 text-[12px]" style={{ color: "var(--fg)", fontFamily: "Inter, sans-serif" }}>
-                        <span className="w-1 h-1 rounded-full" style={{ background: "var(--gold)" }} />
-                        {m}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-5 pt-5 flex items-center gap-3" style={{ borderTop: "1px solid var(--hairline)" }}>
-                    {[Icon.Instagram, Icon.Telegram, Icon.YouTube].map((I, k) => (
-                      <a key={k} href="#" className="w-8 h-8 grid place-items-center rounded-full hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors border" style={{ borderColor: "var(--hairline)", color: "var(--muted)" }}>
-                        <I />
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            </Reveal>
-          ))}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8">
+          {list.map((tch, i) => {
+            const subj = tch.subject;
+            const top = tch.topScore ? (tch.topScore + " ball") : (tch.topLevel || "—");
+            return (
+              <Reveal key={tch.slug} delay={i * 80}>
+                <Tilt3D max={9} className="h-full">
+                  <a href={"#/teacher/" + tch.slug} className="group relative block rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2" style={{ background: "var(--card)", border: "1px solid var(--hairline)" }}>
+                    <div className="aspect-[3/4] relative overflow-hidden">
+                      {tch.photo ? (
+                        <img src={tch.photo} alt={tch.fullName} className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-105" />
+                      ) : (
+                        <TeacherInitial teacher={tch} />
+                      )}
+                      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 40%, rgba(7,13,28,0.92) 100%)" }} />
+                      <div className="absolute left-4 top-4">
+                        <span className="px-3 h-7 inline-flex items-center rounded-full text-[10px] uppercase tracking-[0.2em] font-medium backdrop-blur" style={{ background: "var(--gold)", color: "#1a1408" }}>
+                          {subj}
+                        </span>
+                      </div>
+                      <div className="absolute right-4 top-4">
+                        <span className="px-3 h-7 inline-flex items-center gap-1.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-medium backdrop-blur" style={{ background: "rgba(0,0,0,0.4)", color: "#f3eed8", border: "1px solid rgba(212,175,55,0.5)" }}>
+                          <Icon.Star /> {tch.studentCount}
+                        </span>
+                      </div>
+                      <div className="absolute left-5 right-5 bottom-5 text-white">
+                        <h3 className="text-[22px] leading-[1.1]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>{tch.fullName}</h3>
+                        <div className="mt-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--gold)" }}>
+                          <span className="h-px w-6" style={{ background: "var(--gold)" }} />
+                          <span>{ {uz:"Eng yuqori",ru:"Лучший",en:"Top"}[(window.__currentLang||"uz")] }: {top}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-5 flex items-center justify-between">
+                      <span className="text-[12px] uppercase tracking-[0.22em]" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>
+                        { {uz:"Sertifikatlar",ru:"Сертификаты",en:"Certificates"}[(window.__currentLang||"uz")] }: {tch.certificates.length}
+                      </span>
+                      <span className="flex items-center gap-1 text-[12px] font-medium uppercase tracking-wider" style={{ color: "var(--gold)" }}>
+                        { {uz:"Ko'rish",ru:"Открыть",en:"Open"}[(window.__currentLang||"uz")] }
+                        <span className="transition-transform group-hover:translate-x-1"><Icon.ArrowRight /></span>
+                      </span>
+                    </div>
+                  </a>
+                </Tilt3D>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -2236,6 +2261,283 @@ function applyTokens(tokens, headlineFont) {
   }).forEach(([k, v]) => r.style.setProperty(k, v));
 }
 
+// ===== Routing =====
+function useRoute() {
+  const [route, setRoute] = React.useState(() => window.location.hash || "#/");
+  React.useEffect(() => {
+    const onHash = () => setRoute(window.location.hash || "#/");
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+  React.useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [route]);
+  return route;
+}
+
+// ===== Top Results section =====
+function TopResults({ t, lang }) {
+  const teachers = window.TEACHERS || [];
+  const numericAll = [];
+  const cefrAll = [];
+  teachers.forEach(tch => {
+    tch.students.forEach(s => {
+      const item = { ...s, teacher: tch };
+      if (s.score && !isNaN(parseFloat(s.score))) numericAll.push(item);
+      else if (s.level && /^[A-C][12]$/.test(s.level)) cefrAll.push(item);
+    });
+  });
+  const LR = {C2:7,C1:6,B2:5,B1:4,A2:3,A1:2};
+  numericAll.sort((a,b) => parseFloat(b.score) - parseFloat(a.score));
+  cefrAll.sort((a,b) => (LR[b.level]||0) - (LR[a.level]||0));
+  const top = [...cefrAll.slice(0,2), ...numericAll.slice(0,6)].slice(0,8);
+  if (!top.length) return null;
+  const eyebrow = {uz:"Yutuqlar",ru:"Достижения",en:"Achievements"}[lang]||"Achievements";
+  const title   = {uz:"Eng yaxshi natijalar",ru:"Лучшие результаты",en:"Top results"}[lang]||"Top results";
+  const sub     = {uz:"Bizning talabalarimizning rasmiy sertifikatlari.",ru:"Официальные сертификаты наших студентов.",en:"Official certificates earned by our students."}[lang]||"";
+  return (
+    <section id="results" className="relative py-24 lg:py-32 overflow-hidden" style={{ background: "var(--ink)", color: "#f3eed8" }}>
+      <div className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: "radial-gradient(circle at 12% 18%, rgba(var(--gold-rgb),0.18) 0%, transparent 38%), radial-gradient(circle at 88% 78%, rgba(var(--gold-rgb),0.12) 0%, transparent 42%)"
+      }}/>
+      <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10">
+        <div className="grid lg:grid-cols-12 gap-6 mb-14 items-end">
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em]" style={{ color: "var(--gold)" }}>
+              <span className="h-px w-8" style={{ background: "var(--gold)", opacity: 0.6 }}/>
+              <span style={{ fontFamily: "Inter, sans-serif" }}>{eyebrow}</span>
+            </div>
+            <Reveal delay={120}>
+              <h2 className="mt-5 text-[clamp(40px,5.5vw,72px)] leading-[1.02] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>
+                {title}<span style={{ color: "var(--gold)" }}>.</span>
+              </h2>
+            </Reveal>
+          </div>
+          <Reveal delay={220} className="lg:col-span-5">
+            <p className="text-[16px] leading-[1.7]" style={{ color: "rgba(243,238,216,0.7)", fontFamily: "Inter, sans-serif" }}>{sub}</p>
+          </Reveal>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+          {top.map((s, i) => (
+            <Reveal key={i} delay={(i % 4) * 80}>
+              <Tilt3D max={6}>
+                <a href={s.pdf || s.url} target="_blank" rel="noreferrer" className="group block relative rounded-3xl p-7 overflow-hidden transition-all hover:-translate-y-1" style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))", border: "1px solid rgba(243,238,216,0.12)", minHeight: 220 }}>
+                  <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full glow-pulse" style={{ background: "radial-gradient(circle, rgba(var(--gold-rgb),0.35), transparent 70%)" }} />
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-[clamp(40px,3.6vw,56px)] leading-none tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--gold)", fontWeight: 500 }}>
+                      {s.score || s.level}
+                    </div>
+                    {s.score && <div className="text-[12px] uppercase tracking-[0.22em]" style={{ color: "rgba(243,238,216,0.6)" }}>ball</div>}
+                  </div>
+                  <div className="mt-5 text-[18px]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>
+                    {s.name}
+                  </div>
+                  <div className="mt-2 text-[12px]" style={{ color: "rgba(243,238,216,0.6)", fontFamily: "Inter, sans-serif" }}>
+                    {s.subject || s.teacher.subject}
+                  </div>
+                  <div className="mt-6 pt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.22em]" style={{ borderTop: "1px solid rgba(243,238,216,0.08)" }}>
+                    <span style={{ color: "rgba(243,238,216,0.5)" }}>{s.teacher.fullName.split(" ")[0]} {s.teacher.fullName.split(" ")[1] || ""}</span>
+                    <span style={{ color: "var(--gold)" }} className="flex items-center gap-1 transition-transform group-hover:translate-x-1">
+                      Sertifikat <Icon.ArrowRight />
+                    </span>
+                  </div>
+                </a>
+              </Tilt3D>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ===== Teacher detail page =====
+function TeacherPage({ teacher, t, lang }) {
+  const [tab, setTab] = React.useState("results"); // "results" | "certificates"
+  const heroRef = React.useRef(null);
+  const tch = teacher;
+  const numericStudents = tch.students.filter(s => s.score);
+  const cefrStudents = tch.students.filter(s => !s.score && s.level);
+  const labelTop = {uz:"Eng yuqori natija",ru:"Лучший результат",en:"Top result"}[lang]||"Top result";
+  const labelStudents = {uz:"Talabalar",ru:"Студенты",en:"Students"}[lang]||"Students";
+  const labelCerts = {uz:"Sertifikatlar",ru:"Сертификаты",en:"Certificates"}[lang]||"Certificates";
+  const labelResults = {uz:"Natijalar",ru:"Результаты",en:"Results"}[lang]||"Results";
+  const labelBack = {uz:"Bosh sahifa",ru:"Главная",en:"Home"}[lang]||"Home";
+  const labelView = {uz:"Sertifikatni ko'rish",ru:"Посмотреть сертификат",en:"View certificate"}[lang]||"View certificate";
+  return (
+    <>
+      <section ref={heroRef} className="relative overflow-hidden" style={{ paddingTop: 120, paddingBottom: 60, minHeight: "70vh" }}>
+        <HeroBackground variant="mesh" />
+        <CursorGlow targetRef={heroRef} />
+        <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-10 items-center" style={{ zIndex: 2, minHeight: "60vh" }}>
+          <div className="lg:col-span-7">
+            <Reveal>
+              <a href="#/" className="inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.25em] hover:text-[var(--gold)] transition-colors" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>
+                <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><Icon.ArrowRight /></span>
+                {labelBack}
+              </a>
+            </Reveal>
+            <Reveal delay={100}>
+              <div className="mt-8 flex items-center gap-3 text-[11px] uppercase tracking-[0.3em]" style={{ color: "var(--gold)", fontFamily: "Inter, sans-serif" }}>
+                <span className="h-px w-8" style={{ background: "var(--gold)", opacity: 0.6 }}/>
+                <span>{tch.subject}</span>
+              </div>
+            </Reveal>
+            <h1 className="mt-5 leading-[0.95] tracking-tight" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500, color: "var(--fg)" }}>
+              <WordReveal text={tch.firstName} delay={150} className="block text-[clamp(48px,7vw,96px)]" />
+              <WordReveal text={(tch.surname + " " + (tch.father || "")).trim()} delay={400} className="block text-[clamp(40px,6vw,84px)] italic wow-shimmer" style={{ color: "var(--gold)" }} />
+            </h1>
+            <Reveal delay={900}>
+              <div className="mt-10 flex flex-wrap gap-6">
+                <Stat label={labelStudents} value={tch.studentCount} />
+                <Stat label={labelCerts} value={tch.certificates.length} />
+                <Stat label={labelTop} value={tch.topScore || tch.topLevel || "—"} highlight />
+              </div>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-5">
+            <Reveal delay={350}>
+              <div className="relative aspect-[5/6] max-w-[460px] mx-auto rounded-[28px] overflow-hidden" style={{ boxShadow: "0 40px 80px -30px rgba(0,0,0,0.5)" }}>
+                {tch.photo ? (
+                  <img src={tch.photo} alt={tch.fullName} className="w-full h-full object-cover" />
+                ) : (
+                  <TeacherInitial teacher={tch} />
+                )}
+                <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 50%, rgba(7,13,28,0.65) 100%)" }} />
+                <div className="absolute left-6 right-6 bottom-6 text-white">
+                  <div className="text-[10px] uppercase tracking-[0.3em] opacity-80">ELEGANT</div>
+                  <div className="mt-1 text-[18px]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>{tch.subject}</div>
+                </div>
+                <div className="absolute -inset-4 rounded-[36px] pointer-events-none" style={{ border: "1px solid rgba(var(--gold-rgb),0.35)" }} />
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Tab switcher */}
+      <section className="py-8" style={{ background: "var(--band)", borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}>
+        <div className="max-w-[1320px] mx-auto px-6 lg:px-10 flex items-center gap-3 flex-wrap">
+          <TabBtn active={tab==="results"} onClick={()=>setTab("results")} icon={<Icon.Star />}>
+            {labelResults} <span className="opacity-60 ml-1">({tch.studentCount})</span>
+          </TabBtn>
+          <TabBtn active={tab==="certificates"} onClick={()=>setTab("certificates")} icon={<Icon.Check />}>
+            {labelCerts} <span className="opacity-60 ml-1">({tch.certificates.length})</span>
+          </TabBtn>
+        </div>
+      </section>
+
+      {tab === "results" && (
+        <section className="py-20 lg:py-28">
+          <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
+            {numericStudents.length > 0 && (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+                {numericStudents.map((s, i) => (
+                  <Reveal key={i} delay={(i % 3) * 80}>
+                    <Tilt3D max={5}>
+                      <a href={s.pdf || s.url} target="_blank" rel="noreferrer" className="group relative block rounded-3xl p-7 transition-all hover:-translate-y-1 overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--hairline)", minHeight: 200 }}>
+                        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full" style={{ background: "radial-gradient(circle, rgba(var(--gold-rgb),0.25), transparent 70%)", opacity: 0, transition: "opacity .4s" }} />
+                        <div className="flex items-baseline gap-2">
+                          <div className="text-[clamp(38px,4vw,52px)] leading-none" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--gold)", fontWeight: 500 }}>{s.score}</div>
+                          <div className="text-[11px] uppercase tracking-[0.22em]" style={{ color: "var(--muted)" }}>ball{s.percent ? " · " + s.percent : ""}</div>
+                          {s.level && (
+                            <span className="ml-auto px-2.5 h-6 inline-flex items-center rounded-full text-[10px] font-bold tracking-wider" style={{ background: "var(--gold)", color: "#1a1408" }}>{s.level}</span>
+                          )}
+                        </div>
+                        <div className="mt-5 text-[18px]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500, color: "var(--fg)" }}>{s.name}</div>
+                        <div className="mt-2 text-[12px]" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>{s.subject || tch.subject}</div>
+                        <div className="mt-5 pt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.22em]" style={{ borderTop: "1px solid var(--hairline)", color: "var(--muted)" }}>
+                          <span>{s.cert_no || (s.issued ? s.issued : "")}</span>
+                          <span className="flex items-center gap-1 transition-transform group-hover:translate-x-1" style={{ color: "var(--gold)" }}>{labelView} <Icon.ArrowRight /></span>
+                        </div>
+                      </a>
+                    </Tilt3D>
+                  </Reveal>
+                ))}
+              </div>
+            )}
+            {cefrStudents.length > 0 && (
+              <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+                {cefrStudents.map((s, i) => (
+                  <Reveal key={i} delay={(i % 3) * 80}>
+                    <Tilt3D max={5}>
+                      <a href={s.pdf || s.url} target="_blank" rel="noreferrer" className="group relative block rounded-3xl p-7 transition-all hover:-translate-y-1 overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--hairline)", minHeight: 180 }}>
+                        <div className="flex items-center gap-3">
+                          <span className="px-3 h-9 inline-flex items-center rounded-full text-[14px] font-bold tracking-wider" style={{ background: "var(--gold)", color: "#1a1408", fontFamily: "Inter, sans-serif" }}>{s.level}</span>
+                          <span className="text-[12px] uppercase tracking-[0.22em]" style={{ color: "var(--muted)" }}>CEFR</span>
+                        </div>
+                        <div className="mt-5 text-[18px]" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500, color: "var(--fg)" }}>{s.name}</div>
+                        <div className="mt-2 text-[12px]" style={{ color: "var(--muted)" }}>{s.subject || "Ingliz tili"}</div>
+                        <div className="mt-5 pt-4 flex items-center justify-end text-[11px] uppercase tracking-[0.22em]" style={{ borderTop: "1px solid var(--hairline)" }}>
+                          <span className="flex items-center gap-1 transition-transform group-hover:translate-x-1" style={{ color: "var(--gold)" }}>{labelView} <Icon.ArrowRight /></span>
+                        </div>
+                      </a>
+                    </Tilt3D>
+                  </Reveal>
+                ))}
+              </div>
+            )}
+            {tch.students.length === 0 && (
+              <div className="text-center py-16 text-[14px]" style={{ color: "var(--muted)" }}>—</div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {tab === "certificates" && (
+        <section className="py-20 lg:py-28">
+          <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
+            {tch.certificates.length === 0 ? (
+              <div className="text-center py-16 text-[14px]" style={{ color: "var(--muted)" }}>—</div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6">
+                {tch.certificates.map((c, i) => (
+                  <Reveal key={i} delay={(i % 2) * 90}>
+                    <div className="rounded-3xl overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--hairline)" }}>
+                      <div className="relative" style={{ height: 540, background: "var(--band)" }}>
+                        <iframe src={c.path + "#toolbar=0&navpanes=0"} title={c.file} className="w-full h-full" style={{ border: 0 }} />
+                      </div>
+                      <div className="p-5 flex items-center justify-between gap-3">
+                        <div className="text-[13px] truncate" style={{ color: "var(--fg)", fontFamily: "Inter, sans-serif" }}>{c.file}</div>
+                        <a href={c.path} target="_blank" rel="noreferrer" className="shrink-0 inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[12px] font-medium" style={{ background: "var(--gold)", color: "#1a1408" }}>
+                          {labelView} <Icon.ArrowRight />
+                        </a>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+    </>
+  );
+}
+
+function Stat({ label, value, highlight = false }) {
+  return (
+    <div>
+      <div className="text-[clamp(36px,4vw,56px)] leading-none" style={{ fontFamily: "'Cormorant Garamond', serif", color: highlight ? "var(--gold)" : "var(--fg)", fontWeight: 500 }}>{value}</div>
+      <div className="mt-2 text-[11px] uppercase tracking-[0.25em]" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>{label}</div>
+    </div>
+  );
+}
+
+function TabBtn({ active, onClick, icon, children }) {
+  return (
+    <button onClick={onClick} className="inline-flex items-center gap-2 h-11 px-5 rounded-full text-[12px] font-medium tracking-wide transition-all"
+      style={{
+        background: active ? "var(--gold)" : "transparent",
+        color: active ? "#1a1408" : "var(--fg)",
+        border: active ? "1px solid var(--gold)" : "1px solid var(--hairline)",
+        fontFamily: "Inter, sans-serif",
+      }}>
+      <span style={{ opacity: active ? 1 : 0.5 }}>{icon}</span>
+      {children}
+    </button>
+  );
+}
+
 // ===== WOW components =====
 
 function Preloader() {
@@ -2426,21 +2728,32 @@ function App() {
     {uz:"Bepul sinov darsi", ru:"Бесплатный пробный урок", en:"Free trial lesson"}[lang] || "Free trial lesson",
   ], [lang]);
 
+  const route = useRoute();
+  const teacherMatch = route.match(/^#\/teacher\/([\w-]+)/);
+  const teacher = teacherMatch ? (window.TEACHERS || []).find(tt => tt.slug === teacherMatch[1]) : null;
+
   return (
     <div style={{ background: "var(--bg)", color: "var(--fg)", minHeight: "100vh" }}>
       <Preloader />
       <ScrollProgress />
       <Navbar t={t} lang={lang} setLang={(l) => { setLang(l); setTweak("lang", l); }} theme={theme} setTheme={setTheme} />
       <main>
-        <Hero t={t} heroBg={tweaksObj.heroBg} />
-        <Marquee items={marqueeItems} />
-        <Stats t={t} />
-        <Courses t={t} />
-        <Teachers t={t} />
-        <Why t={t} />
-        <Testimonials t={t} />
-        <Pricing t={t} />
-        <Contact t={t} lang={lang} />
+        {teacher ? (
+          <TeacherPage teacher={teacher} t={t} lang={lang} />
+        ) : (
+          <>
+            <Hero t={t} heroBg={tweaksObj.heroBg} />
+            <Marquee items={marqueeItems} />
+            <TopResults t={t} lang={lang} />
+            <Stats t={t} />
+            <Courses t={t} />
+            <Teachers t={t} />
+            <Why t={t} />
+            <Testimonials t={t} />
+            <Pricing t={t} />
+            <Contact t={t} lang={lang} />
+          </>
+        )}
       </main>
       <Footer t={t} lang={lang} />
 
