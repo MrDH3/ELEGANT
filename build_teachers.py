@@ -39,19 +39,29 @@ for tdir in sorted(os.listdir(INFO)):
     subject_raw, surname, first, father = parse_folder_name(tdir)
     full_name = " ".join(p for p in [title_uz(first), title_uz(surname), title_uz(father)] if p)
 
-    # photos in info
-    photos = list_files(full_info, {'jpg','jpeg','png','webp'})
+    # Identify portrait: prefer exact "photo.jpg" / "Photo.jpg" / "image.jpg".
+    # All other image files become certificate-image entries (e.g. a JPG of a
+    # printed certificate). PDFs are also certificates.
+    PORTRAIT_NAMES = {"photo.jpg", "photo.jpeg", "photo.png", "image.jpg", "image.png"}
+    images = list_files(full_info, {'jpg','jpeg','png','webp'})
     teacher_photo = None
-    for p in photos:
-        if p.lower().startswith("photo"):
+    for p in images:
+        if p.lower() in PORTRAIT_NAMES:
             teacher_photo = p; break
-    if not teacher_photo and photos: teacher_photo = photos[0]
+    if not teacher_photo and images:
+        teacher_photo = images[0]  # fallback
 
-    # certificates (PDFs) in info
+    # certificates: every PDF + every non-portrait image
     certs = []
     for f in list_files(full_info, {'pdf'}):
         certs.append({
-            "file": f,
+            "file": f, "kind": "pdf",
+            "path": f"assets/Teachers Information/{tdir}/{f}",
+        })
+    for f in images:
+        if f == teacher_photo: continue
+        certs.append({
+            "file": f, "kind": "image",
             "path": f"assets/Teachers Information/{tdir}/{f}",
         })
 

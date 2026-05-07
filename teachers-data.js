@@ -8,10 +8,11 @@ window.TEACHERS = [
     "firstName": "Shaxlo",
     "father": "Yuldashboyevna",
     "fullName": "Shaxlo Abdunabiyeva Yuldashboyevna",
-    "photo": null,
+    "photo": "assets/Teachers Information/BIOLOGIYA_ABDUNABIYEVA_SHAXLO_YULDASHBOYEVNA/photo.jpg",
     "certificates": [
       {
         "file": "ABDUNABIYEVA_SHAXLO_YULDASHBOYEVNA.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/BIOLOGIYA_ABDUNABIYEVA_SHAXLO_YULDASHBOYEVNA/ABDUNABIYEVA_SHAXLO_YULDASHBOYEVNA.pdf"
       }
     ],
@@ -106,10 +107,12 @@ window.TEACHERS = [
     "certificates": [
       {
         "file": "68078edf27c5056ac80c38f4ce02bbe9.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/Geografiya va Tabiiy fan_USAROV_SANJAR/68078edf27c5056ac80c38f4ce02bbe9.pdf"
       },
       {
         "file": "747dbc8c-e3bf-4572-b468-07b9ade52745.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/Geografiya va Tabiiy fan_USAROV_SANJAR/747dbc8c-e3bf-4572-b468-07b9ade52745.pdf"
       }
     ],
@@ -144,18 +147,22 @@ window.TEACHERS = [
     "certificates": [
       {
         "file": "83f32cbcf7ac0882258b9a82693e4720.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/IELTS_Qo‘ldoshev_Fazliddin_Dilmurod o‘g‘li/83f32cbcf7ac0882258b9a82693e4720.pdf"
       },
       {
         "file": "C1 Qo‘ldoshev Fazliddin.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/IELTS_Qo‘ldoshev_Fazliddin_Dilmurod o‘g‘li/C1 Qo‘ldoshev Fazliddin.pdf"
       },
       {
         "file": "Qo‘ldoshev Fazliddin oliy toifa.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/IELTS_Qo‘ldoshev_Fazliddin_Dilmurod o‘g‘li/Qo‘ldoshev Fazliddin oliy toifa.pdf"
       },
       {
         "file": "UZ02525508888-27-08-2025-ETRF.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/IELTS_Qo‘ldoshev_Fazliddin_Dilmurod o‘g‘li/UZ02525508888-27-08-2025-ETRF.pdf"
       }
     ],
@@ -295,7 +302,13 @@ window.TEACHERS = [
     "father": "Sattor O‘g‘li",
     "fullName": "G‘olibjon Vahobov Sattor O‘g‘li",
     "photo": "assets/Teachers Information/MATEMATIKA_VAHOBOV_G‘OLIBJON_SATTOR O‘G‘LI/Photo.jpg",
-    "certificates": [],
+    "certificates": [
+      {
+        "file": "photo_2026-05-07_15-17-28.jpg",
+        "kind": "image",
+        "path": "assets/Teachers Information/MATEMATIKA_VAHOBOV_G‘OLIBJON_SATTOR O‘G‘LI/photo_2026-05-07_15-17-28.jpg"
+      }
+    ],
     "students": [
       {
         "name": "Ulug‘bek G‘ulomov Ibroximovich",
@@ -591,14 +604,17 @@ window.TEACHERS = [
     "certificates": [
       {
         "file": "1778086793239.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/SAT_BO‘RONBOYEV_RUSLAN_ERJAN O‘G‘LI/1778086793239.pdf"
       },
       {
         "file": "ae9284654075283d5614265faa38edbd (2).pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/SAT_BO‘RONBOYEV_RUSLAN_ERJAN O‘G‘LI/ae9284654075283d5614265faa38edbd (2).pdf"
       },
       {
         "file": "digital_sat_k12_student_weekend_146776594_d3d22134_c928_4883_860f.pdf",
+        "kind": "pdf",
         "path": "assets/Teachers Information/SAT_BO‘RONBOYEV_RUSLAN_ERJAN O‘G‘LI/digital_sat_k12_student_weekend_146776594_d3d22134_c928_4883_860f.pdf"
       }
     ],

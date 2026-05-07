@@ -115,11 +115,26 @@
     animation: marqueeX 38s linear infinite;
   }
   .marquee-track:hover { animation-play-state: paused; }
-  .tilt-card { transform-style: preserve-3d; transition: transform 280ms cubic-bezier(.2,.8,.2,1); will-change: transform; }
+  .tilt-card {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 280ms cubic-bezier(.2,.8,.2,1);
+    will-change: transform;
+    border-radius: 24px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .tilt-card > a, .tilt-card > div:not(.tilt-shine), .tilt-card > article {
+    border-radius: inherit;
+    display: block;
+    height: 100%;
+  }
   .tilt-card .tilt-shine {
-    position: absolute; inset: 0; pointer-events: none; mix-blend-mode: overlay;
-    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.18), transparent 40%);
+    position: absolute; inset: 0; pointer-events: none;
+    border-radius: inherit; overflow: hidden;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(var(--gold-rgb),0.18), transparent 45%);
     opacity: 0; transition: opacity 280ms ease;
+    z-index: 2;
   }
   .tilt-card:hover .tilt-shine { opacity: 1; }
   .preloader {
@@ -261,9 +276,9 @@ const TRANSLATIONS = {
       sub: "Hamma tariflar bepul sinov darsini o'z ichiga oladi.",
       pickCta: "Tanlash",
       tiers: [
-        { name: "Standart", price: "490 000", per: "so'm / oy", feats: ["Haftada 3 dars", "Guruhda 8 talaba", "Asosiy materiallar", "Oylik test"] },
-        { name: "Premium", price: "790 000", per: "so'm / oy", feats: ["Haftada 4 dars", "Guruhda 6 talaba", "Mock imtihonlar", "Shaxsiy mentor", "Speaking club"], popular: true },
-        { name: "VIP", price: "1 290 000", per: "so'm / oy", feats: ["Individual format", "Moslashuvchan jadval", "Cheksiz mock", "Native speaker bilan", "Ball kafolati"] },
+        { name: "Standard", price: "350 000", per: "so'm / oy", feats: ["Haftada 3 kun dars", "Oylik test", "Guruh mashg'ulotlari", "Pre-SAT", "General English", "Matematika DTM", "Biologiya", "Tarix", "Ona tili", "Kimyo", "Geografiya"] },
+        { name: "Premium", price: "450 000", per: "so'm / oy", feats: ["IELTS", "SAT", "CEFR", "Milliy sertifikat"], popular: true },
+        { name: "Ixtisoslashtirilgan Maktablarga tayyorlov", price: "350 000", per: "so'm / oy", feats: ["Prezident maktab", "Ixtisoslashgan maktab", "Al-Beruniy", "Al-Xorazmiy"] },
       ],
     },
     contact: {
@@ -361,9 +376,9 @@ const TRANSLATIONS = {
       sub: "Все тарифы включают бесплатный пробный урок.",
       pickCta: "Выбрать",
       tiers: [
-        { name: "Стандарт", price: "490 000", per: "сум / мес", feats: ["3 урока в неделю", "8 студентов в группе", "Базовые материалы", "Месячный тест"] },
-        { name: "Премиум", price: "790 000", per: "сум / мес", feats: ["4 урока в неделю", "6 студентов в группе", "Mock экзамены", "Личный ментор", "Speaking club"], popular: true },
-        { name: "VIP", price: "1 290 000", per: "сум / мес", feats: ["Индивидуальный формат", "Гибкое расписание", "Безлимитные mock", "С носителем языка", "Гарантия балла"] },
+        { name: "Стандарт", price: "350 000", per: "сум / мес", feats: ["3 дня в неделю", "Ежемесячный тест", "Групповые занятия", "Pre-SAT", "General English", "Математика DTM", "Биология", "История", "Родной язык", "Химия", "География"] },
+        { name: "Премиум", price: "450 000", per: "сум / мес", feats: ["IELTS", "SAT", "CEFR", "Национальный сертификат"], popular: true },
+        { name: "Подготовка в специализированные школы", price: "350 000", per: "сум / мес", feats: ["Президентская школа", "Специализированная школа", "Аль-Беруни", "Аль-Хорезми"] },
       ],
     },
     contact: {
@@ -461,9 +476,9 @@ const TRANSLATIONS = {
       sub: "All plans include a free trial lesson.",
       pickCta: "Choose",
       tiers: [
-        { name: "Standard", price: "490,000", per: "UZS / month", feats: ["3 lessons a week", "8 students per group", "Core materials", "Monthly assessment"] },
-        { name: "Premium", price: "790,000", per: "UZS / month", feats: ["4 lessons a week", "6 students per group", "Mock exams", "Personal mentor", "Speaking club"], popular: true },
-        { name: "VIP", price: "1,290,000", per: "UZS / month", feats: ["One-on-one format", "Flexible schedule", "Unlimited mocks", "Native speaker", "Score guarantee"] },
+        { name: "Standard", price: "350,000", per: "UZS / month", feats: ["3 days a week", "Monthly assessment", "Group lessons", "Pre-SAT", "General English", "Maths DTM", "Biology", "History", "Native language", "Chemistry", "Geography"] },
+        { name: "Premium", price: "450,000", per: "UZS / month", feats: ["IELTS", "SAT", "CEFR", "National certificate"], popular: true },
+        { name: "Specialised School Preparation", price: "350,000", per: "UZS / month", feats: ["Presidential school", "Specialised school", "Al-Beruni", "Al-Khorazmi"] },
       ],
     },
     contact: {
@@ -2494,7 +2509,11 @@ function TeacherPage({ teacher, t, lang }) {
                   <Reveal key={i} delay={(i % 2) * 90}>
                     <div className="rounded-3xl overflow-hidden" style={{ background: "var(--card)", border: "1px solid var(--hairline)" }}>
                       <div className="relative" style={{ height: 540, background: "var(--band)" }}>
-                        <iframe src={c.path + "#toolbar=0&navpanes=0"} title={c.file} className="w-full h-full" style={{ border: 0 }} />
+                        {c.kind === "image" ? (
+                          <img src={c.path} alt={c.file} className="w-full h-full object-contain" />
+                        ) : (
+                          <iframe src={c.path + "#toolbar=0&navpanes=0"} title={c.file} className="w-full h-full" style={{ border: 0 }} />
+                        )}
                       </div>
                       <div className="p-5 flex items-center justify-between gap-3">
                         <div className="text-[13px] truncate" style={{ color: "var(--fg)", fontFamily: "Inter, sans-serif" }}>{c.file}</div>
@@ -2609,6 +2628,41 @@ function CursorGlow({ targetRef }) {
     };
   }, []);
   return <div ref={ref} className="cursor-glow" style={{ opacity: 0, left: "-9999px", top: "-9999px" }} />;
+}
+
+function SubjectsStrip({ lang }) {
+  const subjects = [
+    "Matematika",
+    "Milliy sertifikat",
+    "Attestatsiya",
+    "DTM",
+    "Geografiya",
+    "Tarix",
+  ];
+  const eyebrow = {uz:"Yo'nalishlar",ru:"Направления",en:"Subjects"}[lang]||"Subjects";
+  return (
+    <section className="relative py-10 lg:py-12 overflow-hidden" style={{ borderTop: "1px solid var(--hairline)" }}>
+      <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
+        <div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] mb-6" style={{ color: "var(--gold)" }}>
+          <span className="h-px w-8" style={{ background: "var(--gold)", opacity: 0.6 }}/>
+          <span style={{ fontFamily: "Inter, sans-serif" }}>{eyebrow}</span>
+        </div>
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-4 lg:gap-x-12">
+          {subjects.map((s, i) => (
+            <Reveal key={s} delay={i * 70}>
+              <div className="group flex items-center gap-3 cursor-default">
+                <span className="w-1.5 h-1.5 rounded-full transition-all group-hover:scale-150" style={{ background: "var(--gold)" }}/>
+                <span className="text-[clamp(20px,2.4vw,32px)] tracking-tight transition-colors group-hover:text-[var(--gold)]"
+                      style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 500, color: "var(--fg)" }}>
+                  {s}
+                </span>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function Marquee({ items }) {
@@ -2743,6 +2797,7 @@ function App() {
         ) : (
           <>
             <Hero t={t} heroBg={tweaksObj.heroBg} />
+            <SubjectsStrip lang={lang} />
             <Marquee items={marqueeItems} />
             <TopResults t={t} lang={lang} />
             <Stats t={t} />
