@@ -1700,34 +1700,40 @@ function Contact({ t, lang }) {
     }
 
     const courseLabel = (t.courses.list.find(c => c.tag === form.course) || {}).name || form.course;
-    const lines = [
-      "🎓 *Yangi ariza — ELEGANT*",
+    // Plain text — no parse_mode. Markdown was rejecting messages whenever
+    // user input contained a stray *, _, [, etc. Plain text is bulletproof
+    // and reads fine in Telegram with emojis as the visual hierarchy.
+    const text = [
+      "🎓 Yangi ariza — ELEGANT",
       "",
-      "*Ism:* " + form.name,
-      "*Telefon:* " + form.phone,
-      "*Kurs:* " + courseLabel,
-      form.message ? "*Xabar:* " + form.message : null,
+      "👤 Ism: "      + form.name,
+      "📞 Telefon: "  + form.phone,
+      "📚 Kurs: "     + courseLabel,
+      form.message ? "💬 Xabar: " + form.message : null,
       "",
-      "_" + lang.toUpperCase() + " · " + new Date().toLocaleString("uz-UZ", { dateStyle: "short", timeStyle: "short" }) + "_",
+      "🌐 " + lang.toUpperCase() + " · " + new Date().toLocaleString("uz-UZ", { dateStyle: "short", timeStyle: "short" }),
     ].filter(Boolean).join("\n");
 
-    const TG_BOT   = "8748135379:AAHp8J6lXzHG1Rm_njd_FE-scgsX0OkudfI";
-    const TG_CHAT  = "-5299804341";  // ELEGANT — Yangi arizalar
+    const TG_BOT  = "8748135379:AAHp8J6lXzHG1Rm_njd_FE-scgsX0OkudfI";
+    const TG_CHAT = -5299804341;  // ELEGANT — Yangi arizalar (number, not string)
     const url = "https://api.telegram.org/bot" + TG_BOT + "/sendMessage";
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: TG_CHAT, text: lines, parse_mode: "Markdown", disable_web_page_preview: true }),
+        body: JSON.stringify({ chat_id: TG_CHAT, text, disable_web_page_preview: true }),
       });
-      const ok = res.ok && (await res.json()).ok;
-      if (!ok) throw new Error("telegram api rejected");
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.ok) {
+        console.error("Telegram rejected submission:", res.status, body);
+        throw new Error(body.description || ("status " + res.status));
+      }
       sessionStorage.setItem("elegant.lastSubmit", String(Date.now()));
       setStatus("done");
       setForm({ name: "", phone: "", course: "", message: "" });
       setTimeout(() => setStatus("idle"), 4500);
     } catch (e) {
-      console.error("Telegram submit failed", e);
+      console.error("Telegram submit failed:", e.message || e);
       setStatus("error");
       setTimeout(() => setStatus("idle"), 4500);
     }
