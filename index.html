@@ -304,6 +304,14 @@ const TRANSLATIONS = {
       phone: "Telefon raqam",
       course: "Kursni tanlang",
       coursePh: "Kursni tanlang...",
+      institution: "Maktab / kollej / universitet nomi",
+      level: "Daraja",
+      levelPh: "Daraja...",
+      levelSchool: "Maktab",
+      levelCollege: "Kollej",
+      levelUniversity: "Universitet",
+      grade: "Sinf / kurs",
+      addressLive: "Yashash manzili",
       message: "Xabar (ixtiyoriy)",
       submit: "Yuborish",
       submitting: "Yuborilmoqda...",
@@ -311,6 +319,10 @@ const TRANSLATIONS = {
       errName: "Ismingizni kiriting",
       errPhone: "Telefon raqam noto'g'ri",
       errCourse: "Kursni tanlang",
+      errInstitution: "Maktab yoki kollej nomini kiriting",
+      errLevel: "Darajani tanlang",
+      errGrade: "Sinf yoki kursni kiriting",
+      errAddress: "Manzilingizni kiriting",
       address: "R673+GW2, Buka, Tashkent Region, Uzbekistan",
       hours: "Du–Yak: 08:00 — 20:00",
       phoneNum: "+998 94 684 79 49",
@@ -415,6 +427,14 @@ const TRANSLATIONS = {
       phone: "Номер телефона",
       course: "Выберите курс",
       coursePh: "Выберите курс...",
+      institution: "Школа / колледж / университет",
+      level: "Уровень",
+      levelPh: "Уровень...",
+      levelSchool: "Школа",
+      levelCollege: "Колледж",
+      levelUniversity: "Университет",
+      grade: "Класс / курс",
+      addressLive: "Адрес проживания",
       message: "Сообщение (по желанию)",
       submit: "Отправить",
       submitting: "Отправка...",
@@ -422,6 +442,10 @@ const TRANSLATIONS = {
       errName: "Введите имя",
       errPhone: "Неверный номер телефона",
       errCourse: "Выберите курс",
+      errInstitution: "Укажите школу или колледж",
+      errLevel: "Выберите уровень",
+      errGrade: "Укажите класс или курс",
+      errAddress: "Укажите адрес",
       address: "R673+GW2, Бука, Ташкентская область, Узбекистан",
       hours: "Пн–Вс: 08:00 — 20:00",
       phoneNum: "+998 94 684 79 49",
@@ -526,6 +550,14 @@ const TRANSLATIONS = {
       phone: "Phone number",
       course: "Choose a course",
       coursePh: "Select a course...",
+      institution: "School / college / university name",
+      level: "Level",
+      levelPh: "Level...",
+      levelSchool: "School",
+      levelCollege: "College",
+      levelUniversity: "University",
+      grade: "Grade / year",
+      addressLive: "Home address",
       message: "Message (optional)",
       submit: "Send",
       submitting: "Sending...",
@@ -533,6 +565,10 @@ const TRANSLATIONS = {
       errName: "Please enter your name",
       errPhone: "Invalid phone number",
       errCourse: "Please pick a course",
+      errInstitution: "Please enter your school or college",
+      errLevel: "Please pick a level",
+      errGrade: "Please enter your grade or year",
+      errAddress: "Please enter your address",
       address: "R673+GW2, Buka, Tashkent Region, Uzbekistan",
       hours: "Mon–Sun: 08:00 — 20:00",
       phoneNum: "+998 94 684 79 49",
@@ -1672,15 +1708,20 @@ function Pricing({ t }) {
 
 // =============== CONTACT ===============
 function Contact({ t, lang }) {
-  const [form, setForm] = bS({ name: "", phone: "", course: "", message: "" });
+  const EMPTY = { name: "", phone: "", course: "", institution: "", level: "", grade: "", address: "", message: "" };
+  const [form, setForm] = bS(EMPTY);
   const [errors, setErrors] = bS({});
-  const [status, setStatus] = bS("idle"); // idle | sending | done
+  const [status, setStatus] = bS("idle"); // idle | sending | done | error
 
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = t.contact.errName;
     if (!/^[+\d\s()-]{7,}$/.test(form.phone)) e.phone = t.contact.errPhone;
     if (!form.course) e.course = t.contact.errCourse;
+    if (!form.institution.trim()) e.institution = t.contact.errInstitution;
+    if (!form.level) e.level = t.contact.errLevel;
+    if (!form.grade.trim()) e.grade = t.contact.errGrade;
+    if (!form.address.trim()) e.address = t.contact.errAddress;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -1700,15 +1741,18 @@ function Contact({ t, lang }) {
     }
 
     const courseLabel = (t.courses.list.find(c => c.tag === form.course) || {}).name || form.course;
+    const levelLabel  = ({ school: t.contact.levelSchool, college: t.contact.levelCollege, university: t.contact.levelUniversity }[form.level] || form.level);
     // Plain text — no parse_mode. Markdown was rejecting messages whenever
     // user input contained a stray *, _, [, etc. Plain text is bulletproof
     // and reads fine in Telegram with emojis as the visual hierarchy.
     const text = [
       "🎓 Yangi ariza — ELEGANT",
       "",
-      "👤 Ism: "      + form.name,
-      "📞 Telefon: "  + form.phone,
-      "📚 Kurs: "     + courseLabel,
+      "👤 Ism: "        + form.name,
+      "📞 Telefon: "    + form.phone,
+      "📚 Kurs: "       + courseLabel,
+      "🏫 Maktab/kol.: " + form.institution + " (" + levelLabel + ", " + form.grade + ")",
+      "📍 Manzil: "      + form.address,
       form.message ? "💬 Xabar: " + form.message : null,
       "",
       "🌐 " + lang.toUpperCase() + " · " + new Date().toLocaleString("uz-UZ", { dateStyle: "short", timeStyle: "short" }),
@@ -1750,7 +1794,7 @@ function Contact({ t, lang }) {
       }
       sessionStorage.setItem("elegant.lastSubmit", String(Date.now()));
       setStatus("done");
-      setForm({ name: "", phone: "", course: "", message: "" });
+      setForm(EMPTY);
       setTimeout(() => setStatus("idle"), 4500);
     } catch (e) {
       console.error("Telegram submit failed:", e.message || e);
@@ -1836,6 +1880,30 @@ function Contact({ t, lang }) {
                 </select>
                 {errors.course && <div className="mt-1 text-[11px]" style={{ color: "#c84a4a" }}>{errors.course}</div>}
               </div>
+
+              {/* Where they study */}
+              <div className="mt-6 grid sm:grid-cols-2 gap-6">
+                {inp("institution", t.contact.institution)}
+                <div>
+                  <select
+                    value={form.level}
+                    onChange={(e) => setForm((f) => ({ ...f, level: e.target.value }))}
+                    className="w-full bg-transparent border-0 border-b py-4 text-[15px] outline-none transition-colors focus:border-[var(--gold)]"
+                    style={{ borderColor: errors.level ? "#c84a4a" : "var(--hairline)", color: form.level ? "var(--fg)" : "var(--muted)", fontFamily: "Inter, sans-serif" }}
+                  >
+                    <option value="">{t.contact.levelPh}</option>
+                    <option value="school">{t.contact.levelSchool}</option>
+                    <option value="college">{t.contact.levelCollege}</option>
+                    <option value="university">{t.contact.levelUniversity}</option>
+                  </select>
+                  {errors.level && <div className="mt-1 text-[11px]" style={{ color: "#c84a4a" }}>{errors.level}</div>}
+                </div>
+              </div>
+              <div className="mt-6 grid sm:grid-cols-2 gap-6">
+                {inp("grade", t.contact.grade)}
+                {inp("address", t.contact.addressLive)}
+              </div>
+
               <div className="mt-6">
                 <textarea
                   value={form.message}
