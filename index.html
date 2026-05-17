@@ -1403,7 +1403,7 @@ const { useState: bS, useEffect: bE, useRef: bR } = React;
 // off the student name (canonical, ASCII-folded).
 const TESTIMONIAL_PICKS = [
   {
-    nameKey: "madina joraqulova",
+    nameKey: "madina joraqulova", teacherMatch: "biolog",
     quote: {
       uz: "Biologiyani Shaxlo opa shunday tushuntirardiki, har bir mavzu menga oson tuyulardi. Yil oxirida 68 ball — bu mening eng katta yutug‘im.",
       ru: "Шахло-опа объясняла биологию так, что любая тема казалась простой. К концу года — 68 баллов. Это моя самая большая победа.",
@@ -1411,7 +1411,7 @@ const TESTIMONIAL_PICKS = [
     },
   },
   {
-    nameKey: "nurmuxammad kaldibekov",
+    nameKey: "nurmuxammad kaldibekov", teacherMatch: "geograf",
     quote: {
       uz: "Geografiya menga oddiy fan emas, dunyoni o‘qish edi. 72.76 ball bilan kelgan ishonch — ELEGANT‘ning sovg‘asi.",
       ru: "География для меня — не предмет, а способ читать мир. 72.76 балла и уверенность — это подарок ELEGANT.",
@@ -1419,7 +1419,7 @@ const TESTIMONIAL_PICKS = [
     },
   },
   {
-    nameKey: "ulugbek gulomov",
+    nameKey: "ulugbek gulomov", teacherMatch: "matem",
     quote: {
       uz: "Matematikadan har bir formulani oxirigacha tushunmaguncha o‘qituvchilar dars tugatmasdi. 66.74 ball — mehnat va sabrning natijasi.",
       ru: "По математике учителя не заканчивали урок, пока я не понимал каждую формулу до конца. 66.74 — результат труда и терпения.",
@@ -1427,15 +1427,15 @@ const TESTIMONIAL_PICKS = [
     },
   },
   {
-    nameKey: "munisa sobirova",
+    nameKey: "munisa sobirova", teacherMatch: "ielts",  // pick her CEFR/IELTS record, not maths
     quote: {
-      uz: "Ingliz tilida o‘zimni hech qachon shunchalik erkin his qilmagandim. C1 daraja — endi xalqaro maktab eshiklari ochiq.",
-      ru: "Я никогда не чувствовала себя так свободно на английском. Уровень C1 — и двери международных школ открыты.",
-      en: "I'd never felt this free speaking English. Reaching C1 has opened the doors of every international school I dreamed of.",
+      uz: "Ingliz tilida o‘zimni hech qachon shunchalik erkin his qilmagandim. Fazliddin akaning darslari va C1 daraja — endi xalqaro maktab eshiklari ochiq.",
+      ru: "На английском я никогда не чувствовала себя так свободно. Уроки Фазлиддин-акa и уровень C1 открыли мне двери международных школ.",
+      en: "I had never felt this free speaking English. Fazliddin aka's lessons and a CEFR C1 opened the doors of every international school I dreamed of.",
     },
   },
   {
-    nameKey: "durbek nishonboyev",
+    nameKey: "durbek nishonboyev", teacherMatch: "biolog",
     quote: {
       uz: "Maxsus testlar, mock imtihonlar, har hafta tahlil. ELEGANT‘da tayyorgarlik — bu tartib va natija demakdir.",
       ru: "Спецтесты, мок-экзамены, разборы каждую неделю. Подготовка в ELEGANT — это дисциплина и результат.",
@@ -1443,7 +1443,7 @@ const TESTIMONIAL_PICKS = [
     },
   },
   {
-    nameKey: "farxod abduganiyev",
+    nameKey: "farxod abduganiyev", teacherMatch: "matem",
     quote: {
       uz: "Kichik guruh, sovuq fikrli o‘qituvchi, va seni hech qachon tashlamaydigan jamoa. Mana, men 66 ballman.",
       ru: "Маленькая группа, спокойный учитель и команда, которая не оставит тебя одного. Итог — 66 баллов.",
@@ -1466,27 +1466,44 @@ function foldName(s) {
 function useTestimonials(lang) {
   return React.useMemo(() => {
     const teachers = window.TEACHERS || [];
-    const studentIndex = new Map();
+    // Build a name -> [records...] index. A student can appear under multiple
+    // teachers (e.g. Munisa studies both English with Fazliddin and maths
+    // with G'olibjon), so we keep every record and let the pick narrow it.
+    const byName = new Map();
     teachers.forEach(tch => tch.students.forEach(s => {
-      studentIndex.set(foldName(s.name), { ...s, teacher: tch });
+      const k = foldName(s.name);
+      const rec = { ...s, teacher: tch };
+      if (!byName.has(k)) byName.set(k, []);
+      byName.get(k).push(rec);
     }));
     const items = [];
     for (const pick of TESTIMONIAL_PICKS) {
-      // tolerant lookup: exact, prefix, then 'first surname' match
-      let hit = studentIndex.get(pick.nameKey);
-      if (!hit) {
-        for (const [k, v] of studentIndex) {
-          if (k.startsWith(pick.nameKey)) { hit = v; break; }
+      let recs = byName.get(pick.nameKey);
+      if (!recs) {
+        for (const [k, v] of byName) {
+          if (k.startsWith(pick.nameKey)) { recs = v; break; }
         }
       }
-      if (!hit) continue;
+      if (!recs || !recs.length) continue;
+      let hit = recs[0];
+      if (pick.teacherMatch) {
+        const m = pick.teacherMatch.toLowerCase();
+        const better = recs.find(r =>
+          (r.teacher.subject || "").toLowerCase().includes(m) ||
+          (r.subject || "").toLowerCase().includes(m)
+        );
+        if (better) hit = better;
+      }
+      const subj = hit.subject || hit.teacher.subject;
+      const isEnglish = /ielts|cefr|ingliz|english/i.test(subj);
+      const result = hit.score
+        ? (isEnglish ? `IELTS ${hit.score}` : `${subj} · ${hit.score}`)
+        : (hit.level ? `CEFR ${hit.level}` : subj);
       items.push({
         name: hit.name,
         photo: hit.studentPhoto,
-        subject: hit.subject || hit.teacher.subject,
-        result: hit.score
-          ? (hit.subject || hit.teacher.subject).includes("IELTS") ? `IELTS ${hit.score}` : `${hit.subject || hit.teacher.subject} · ${hit.score}`
-          : (hit.level ? `CEFR ${hit.level}` : (hit.subject || hit.teacher.subject)),
+        subject: subj,
+        result,
         text: pick.quote[lang] || pick.quote.uz,
         pdf: hit.pdf || hit.url || null,
         teacher: hit.teacher,
