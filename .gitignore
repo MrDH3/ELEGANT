@@ -4,3 +4,5 @@ node_modules/
 teachers-data.json
 qr_results.json
 students_data.json
+student-photo-map.json
+tmp_extracted_photos/

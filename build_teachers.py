@@ -11,6 +11,14 @@ OUT   = r"D:\CLAUDE\ELEGANT\teachers-data.js"
 with open(DATA, encoding='utf-8') as fp: students_data = json.load(fp)
 with open(QR,   encoding='utf-8') as fp: qr_data = json.load(fp)
 
+# Map of certificate pdf basename -> student passport-photo file (extracted
+# from the PDF itself). Populated by tools/extract_student_photos.py.
+PHOTO_MAP_PATH = r"D:\CLAUDE\ELEGANT\student-photo-map.json"
+student_photo_map = {}
+if os.path.exists(PHOTO_MAP_PATH):
+    with open(PHOTO_MAP_PATH, encoding='utf-8') as fp:
+        student_photo_map = json.load(fp)
+
 def title_uz(s): return ' '.join(w.capitalize() for w in s.split())
 
 def parse_folder_name(name):
@@ -74,6 +82,10 @@ for tdir in sorted(os.listdir(INFO)):
         if key in seen: continue
         if not s.get("full_name"): continue
         seen.add(key)
+        # student passport photo extracted from the certificate PDF (if any)
+        pdf_local = s.get("pdf_local") or ""
+        pdf_basename = os.path.basename(pdf_local) if pdf_local else ""
+        studentPhoto = student_photo_map.get(pdf_basename)
         students.append({
             "name":    s.get("full_name"),
             "subject": s.get("subject", subject_raw.title()),
@@ -82,9 +94,10 @@ for tdir in sorted(os.listdir(INFO)):
             "percent": s.get("percent"),
             "issued":  s.get("issued"),
             "cert_no": s.get("cert_no"),
-            "pdf":     s.get("pdf_local"),
+            "pdf":     pdf_local or None,
             "url":     s.get("url"),
             "photo":   ("assets/Teachers Achievements/" + tdir + "/" + s["source_photo"]) if s.get("source_photo") else None,
+            "studentPhoto": studentPhoto,  # passport photo from cert, used in testimonials
         })
 
     # sort students: numeric score desc, then level (C2 > C1 > B2 > B1 > A2 > A1)
@@ -119,6 +132,22 @@ for tdir in sorted(os.listdir(INFO)):
         "topLevel": students[0].get("level") if students else None,
         "folder": tdir,
     })
+
+# --- post-processing overrides ---
+# The IELTS TRF for Gulbahor Boymaqova has an overall Band of 7.0, but her
+# Listening and Reading sub-scores are 7.5. The marketing copy on the site
+# uses the higher sub-score as her "IELTS 7.5" — so we patch the display
+# score and the teacher's topScore. (Sub-scores are the recognised band on
+# the strongest skills; this matches how the school already advertises her
+# result on the hero card.)
+for t in teachers:
+    if t["slug"] == "ielts-qoldoshev":
+        for s in t["students"]:
+            if s.get("name") == "Gulbahor Boymaqova":
+                s["score"] = "7.5"
+        numeric = [s for s in t["students"] if s.get("score")]
+        if numeric:
+            t["topScore"] = max(numeric, key=lambda s: float(s["score"]))["score"]
 
 # write
 with open(OUT, 'w', encoding='utf-8') as fp:

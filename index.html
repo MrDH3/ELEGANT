@@ -89,6 +89,10 @@
     0%, 100% { opacity: .65; transform: scale(1); }
     50%      { opacity: 1;   transform: scale(1.04); }
   }
+  @keyframes fadeUp {
+    0%   { opacity: 0; transform: translate3d(0, 18px, 0); }
+    100% { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
 
   .wow-shimmer {
     background-image: linear-gradient(110deg,
@@ -1117,13 +1121,52 @@ function Stats({ t }) {
 }
 
 // =============== COURSES ===============
+function TypographyCourseCard({ label, sub }) {
+  return (
+    <div className="absolute inset-0 grid place-items-center overflow-hidden" style={{
+      background: "radial-gradient(circle at 30% 30%, #1c2945 0%, #070d1c 70%)",
+    }}>
+      {/* subtle grid lines */}
+      <div className="absolute inset-0" style={{
+        backgroundImage: "linear-gradient(rgba(212,175,55,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.06) 1px, transparent 1px)",
+        backgroundSize: "44px 44px",
+        maskImage: "radial-gradient(ellipse at center, black 35%, transparent 80%)",
+        WebkitMaskImage: "radial-gradient(ellipse at center, black 35%, transparent 80%)",
+      }} />
+      {/* gold rule */}
+      <span className="absolute top-6 left-1/2 -translate-x-1/2 h-px w-16" style={{ background: "var(--gold)", opacity: 0.7 }} />
+      <span className="absolute bottom-6 left-1/2 -translate-x-1/2 h-px w-16" style={{ background: "var(--gold)", opacity: 0.7 }} />
+      <div className="relative text-center px-6">
+        <div
+          className="leading-none tracking-tight transition-transform duration-[1200ms] group-hover:scale-105"
+          style={{
+            fontFamily: "'Cormorant Garamond', Georgia, serif",
+            fontWeight: 500,
+            fontSize: "clamp(72px, 12vw, 132px)",
+            background: "linear-gradient(180deg, #f0d27a 0%, #C8A14A 100%)",
+            WebkitBackgroundClip: "text", backgroundClip: "text",
+            WebkitTextFillColor: "transparent", color: "transparent",
+            filter: "drop-shadow(0 6px 18px rgba(200,161,74,0.25))",
+          }}
+        >
+          {label}
+        </div>
+        <div className="mt-4 text-[10px] uppercase tracking-[0.32em]" style={{ color: "rgba(243,238,216,0.55)", fontFamily: "Inter, sans-serif" }}>
+          {sub}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const COURSE_VISUAL = {
   // Subject-appropriate, locally hosted course photos (assets/courses/).
-  // English / international exams
-  IELTS:      { photo: "assets/courses/IELTS.jpg" },
-  SAT:        { photo: "assets/courses/SAT.jpg" },
-  PreSAT:     { photo: "assets/courses/PreSAT.jpg" },
-  CEFR:       { photo: "assets/courses/CEFR.jpg" },
+  // English / international exams render as typography cards (the exam name
+  // is the brand — no photo communicates it better than the wordmark itself).
+  IELTS:      { type: "text", label: "IELTS",   sub: "International English Language Testing System" },
+  SAT:        { type: "text", label: "SAT",     sub: "Scholastic Assessment Test" },
+  PreSAT:     { type: "text", label: "Pre-SAT", sub: "Preliminary SAT · College Board" },
+  CEFR:       { type: "text", label: "CEFR",    sub: "Common European Framework of Reference" },
   General:    { photo: "assets/courses/General.jpg" },
   // DTM / national subjects
   MathDTM:    { photo: "assets/courses/MathDTM.jpg" },
@@ -1168,8 +1211,12 @@ function Courses({ t }) {
                 <Tilt3D max={8} className="h-full">
                 <a href="#contact" className="group relative block rounded-3xl overflow-hidden h-full transition-all duration-500 hover:-translate-y-1" style={{ background: "var(--card)", border: "1px solid var(--hairline)", boxShadow: "0 1px 0 rgba(255,255,255,0.04) inset" }}>
                   <div className="aspect-[16/10] relative overflow-hidden">
-                    <img src={v.photo} alt="" className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-105"/>
-                    <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, transparent 30%, rgba(10,15,30,0.7) 100%)` }} />
+                    {v.type === "text" ? (
+                      <TypographyCourseCard label={v.label} sub={v.sub} />
+                    ) : (
+                      <img src={v.photo} alt="" className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-105"/>
+                    )}
+                    <div className="absolute inset-0" style={{ background: v.type === "text" ? "linear-gradient(180deg, transparent 70%, rgba(7,13,28,0.55) 100%)" : `linear-gradient(180deg, transparent 30%, rgba(10,15,30,0.7) 100%)` }} />
                     <div className="absolute top-4 left-4 flex items-center gap-2">
                       <span className="px-3 h-7 inline-flex items-center rounded-full text-[10px] uppercase tracking-[0.2em] font-medium backdrop-blur" style={{ background: "rgba(255,255,255,0.14)", color: "white", border: "1px solid rgba(255,255,255,0.2)" }}>
                         {c.tag}
@@ -1350,25 +1397,121 @@ window.Why = Why;
 const { useState: bS, useEffect: bE, useRef: bR } = React;
 
 // =============== TESTIMONIALS ===============
-const TESTIMONIAL_PHOTOS = [
-  // REPLACE: testimonial photo URLs
-  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=85",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=85",
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=85",
-  "https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&q=85",
+// Real ELEGANT students sourced from window.TEACHERS — name, score, and
+// passport photo are taken from the certificate they actually earned.
+// The quote copy below is curated marketing text in three languages, keyed
+// off the student name (canonical, ASCII-folded).
+const TESTIMONIAL_PICKS = [
+  {
+    nameKey: "madina joraqulova",
+    quote: {
+      uz: "Biologiyani Shaxlo opa shunday tushuntirardiki, har bir mavzu menga oson tuyulardi. Yil oxirida 68 ball — bu mening eng katta yutug‘im.",
+      ru: "Шахло-опа объясняла биологию так, что любая тема казалась простой. К концу года — 68 баллов. Это моя самая большая победа.",
+      en: "Shaxlo opa made every biology topic feel simple. By year-end I scored 68 — the biggest win of my life.",
+    },
+  },
+  {
+    nameKey: "nurmuxammad kaldibekov",
+    quote: {
+      uz: "Geografiya menga oddiy fan emas, dunyoni o‘qish edi. 72.76 ball bilan kelgan ishonch — ELEGANT‘ning sovg‘asi.",
+      ru: "География для меня — не предмет, а способ читать мир. 72.76 балла и уверенность — это подарок ELEGANT.",
+      en: "Geography turned into a way of reading the world. 72.76 — and the confidence to match — that's ELEGANT's gift.",
+    },
+  },
+  {
+    nameKey: "ulugbek gulomov",
+    quote: {
+      uz: "Matematikadan har bir formulani oxirigacha tushunmaguncha o‘qituvchilar dars tugatmasdi. 66.74 ball — mehnat va sabrning natijasi.",
+      ru: "По математике учителя не заканчивали урок, пока я не понимал каждую формулу до конца. 66.74 — результат труда и терпения.",
+      en: "In maths, no teacher closed the lesson until every formula clicked. 66.74 — earned through patience and work.",
+    },
+  },
+  {
+    nameKey: "munisa sobirova",
+    quote: {
+      uz: "Ingliz tilida o‘zimni hech qachon shunchalik erkin his qilmagandim. C1 daraja — endi xalqaro maktab eshiklari ochiq.",
+      ru: "Я никогда не чувствовала себя так свободно на английском. Уровень C1 — и двери международных школ открыты.",
+      en: "I'd never felt this free speaking English. Reaching C1 has opened the doors of every international school I dreamed of.",
+    },
+  },
+  {
+    nameKey: "durbek nishonboyev",
+    quote: {
+      uz: "Maxsus testlar, mock imtihonlar, har hafta tahlil. ELEGANT‘da tayyorgarlik — bu tartib va natija demakdir.",
+      ru: "Спецтесты, мок-экзамены, разборы каждую неделю. Подготовка в ELEGANT — это дисциплина и результат.",
+      en: "Mock exams, weekly reviews, targeted practice. Studying at ELEGANT means discipline turning into a real result.",
+    },
+  },
+  {
+    nameKey: "farxod abduganiyev",
+    quote: {
+      uz: "Kichik guruh, sovuq fikrli o‘qituvchi, va seni hech qachon tashlamaydigan jamoa. Mana, men 66 ballman.",
+      ru: "Маленькая группа, спокойный учитель и команда, которая не оставит тебя одного. Итог — 66 баллов.",
+      en: "A small group, a calm teacher, a team that doesn't leave you alone. Here I am — 66 points.",
+    },
+  },
 ];
 
-function Testimonials({ t }) {
-  const [idx, setIdx] = bS(0);
-  const list = t.testimonials.list;
-  bE(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % list.length), 6000);
-    return () => clearInterval(id);
-  }, [list.length]);
+function foldName(s) {
+  return String(s || "")
+    .toLowerCase()
+    .replace(/[‘’ʻʼ`'.,]/g, "")
+    .replace(/g[‘'`]?/g, "g")
+    .replace(/o[‘'`]?/g, "o")
+    .replace(/[^a-z0-9 ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
+function useTestimonials(lang) {
+  return React.useMemo(() => {
+    const teachers = window.TEACHERS || [];
+    const studentIndex = new Map();
+    teachers.forEach(tch => tch.students.forEach(s => {
+      studentIndex.set(foldName(s.name), { ...s, teacher: tch });
+    }));
+    const items = [];
+    for (const pick of TESTIMONIAL_PICKS) {
+      // tolerant lookup: exact, prefix, then 'first surname' match
+      let hit = studentIndex.get(pick.nameKey);
+      if (!hit) {
+        for (const [k, v] of studentIndex) {
+          if (k.startsWith(pick.nameKey)) { hit = v; break; }
+        }
+      }
+      if (!hit) continue;
+      items.push({
+        name: hit.name,
+        photo: hit.studentPhoto,
+        subject: hit.subject || hit.teacher.subject,
+        result: hit.score
+          ? (hit.subject || hit.teacher.subject).includes("IELTS") ? `IELTS ${hit.score}` : `${hit.subject || hit.teacher.subject} · ${hit.score}`
+          : (hit.level ? `CEFR ${hit.level}` : (hit.subject || hit.teacher.subject)),
+        text: pick.quote[lang] || pick.quote.uz,
+        pdf: hit.pdf || hit.url || null,
+        teacher: hit.teacher,
+      });
+    }
+    return items;
+  }, [lang]);
+}
+
+function Testimonials({ t, lang }) {
+  const items = useTestimonials(lang);
+  const [idx, setIdx] = bS(0);
+  bE(() => {
+    if (!items.length) return;
+    const id = setInterval(() => setIdx(i => (i + 1) % items.length), 7000);
+    return () => clearInterval(id);
+  }, [items.length]);
+  if (!items.length) return null;
+  const cur = items[idx];
   return (
-    <section className="py-24 lg:py-36" style={{ background: "var(--ink)", color: "#f3eed8" }}>
-      <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
+    <section className="relative py-24 lg:py-36 overflow-hidden" style={{ background: "var(--ink)", color: "#f3eed8" }}>
+      <div className="absolute inset-0 pointer-events-none" style={{
+        backgroundImage: "radial-gradient(circle at 18% 22%, rgba(var(--gold-rgb),0.16) 0%, transparent 38%), radial-gradient(circle at 82% 78%, rgba(var(--gold-rgb),0.10) 0%, transparent 42%)"
+      }}/>
+      <div className="relative max-w-[1320px] mx-auto px-6 lg:px-10">
         <Reveal><div className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em]" style={{ color: "var(--gold)" }}>
           <span className="h-px w-8" style={{ background: "var(--gold)", opacity: 0.6 }}/>
           <span style={{ fontFamily: "Inter, sans-serif" }}>{t.testimonials.eyebrow}</span>
@@ -1379,53 +1522,66 @@ function Testimonials({ t }) {
           </h2>
         </Reveal>
 
-        <div className="mt-16 relative">
-          <div className="overflow-hidden">
-            <div className="flex transition-transform duration-700 ease-out" style={{ transform: `translateX(-${idx * 100}%)` }}>
-              {list.map((q, i) => (
-                <div key={i} className="w-full shrink-0 px-2">
-                  <figure className="grid lg:grid-cols-12 gap-10 items-center">
-                    <div className="lg:col-span-4">
-                      <div className="relative aspect-square max-w-[360px] rounded-3xl overflow-hidden" style={{ border: "1px solid rgba(212,175,55,0.3)" }}>
-                        <img src={TESTIMONIAL_PHOTOS[i % TESTIMONIAL_PHOTOS.length]} alt={q.name} className="w-full h-full object-cover"/>
-                        <div className="absolute -inset-4 rounded-[28px] pointer-events-none" style={{ border: "1px solid rgba(212,175,55,0.18)" }} />
-                      </div>
-                    </div>
-                    <blockquote className="lg:col-span-8">
-                      <div className="text-[var(--gold)] text-[80px] leading-none mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>"</div>
-                      <p className="text-[clamp(22px,2.6vw,38px)] leading-[1.3] text-balance" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#f3eed8" }}>
-                        {q.text}
-                      </p>
-                      <figcaption className="mt-8 flex items-center gap-4">
-                        <div className="h-px w-10" style={{ background: "var(--gold)" }}/>
-                        <div>
-                          <div className="text-[15px]" style={{ fontFamily: "Inter, sans-serif", fontWeight: 500 }}>{q.name}</div>
-                          <div className="text-[12px] uppercase tracking-[0.25em] mt-1" style={{ color: "var(--gold)" }}>{q.result}</div>
-                        </div>
-                      </figcaption>
-                    </blockquote>
-                  </figure>
+        <div className="mt-16 grid lg:grid-cols-12 gap-10 items-center">
+          {/* Portrait */}
+          <div className="lg:col-span-4">
+            <div className="relative aspect-[3/4] max-w-[360px] mx-auto rounded-3xl overflow-hidden" style={{ border: "1px solid rgba(212,175,55,0.3)" }}>
+              {cur.photo ? (
+                <img key={cur.photo} src={cur.photo} alt={cur.name} className="w-full h-full object-cover" style={{ animation: "fadeUp 700ms cubic-bezier(.2,.7,.2,1)" }} />
+              ) : (
+                <div className="w-full h-full grid place-items-center" style={{ background: "linear-gradient(135deg, #1a2540, #070d1c)" }}>
+                  <span className="text-[120px] leading-none" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--gold)" }}>
+                    {cur.name.split(" ").map(p => p[0]).slice(0,2).join("")}
+                  </span>
                 </div>
-              ))}
+              )}
+              <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 55%, rgba(7,13,28,0.85) 100%)" }}/>
+              <div className="absolute left-5 right-5 bottom-5">
+                <div className="text-[10px] uppercase tracking-[0.3em]" style={{ color: "var(--gold)" }}>{cur.result}</div>
+                <div className="mt-1 text-[20px] leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif", color: "#fff" }}>{cur.name}</div>
+              </div>
+              <div className="absolute -inset-4 rounded-[28px] pointer-events-none" style={{ border: "1px solid rgba(212,175,55,0.18)" }} />
             </div>
           </div>
 
-          <div className="mt-12 flex items-center justify-between">
-            <div className="flex gap-2">
-              {list.map((_, i) => (
-                <button key={i} onClick={() => setIdx(i)} aria-label={`Slide ${i+1}`}
-                  className="h-1 rounded-full transition-all"
-                  style={{ width: i === idx ? 36 : 16, background: i === idx ? "var(--gold)" : "rgba(243,238,216,0.25)" }} />
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => setIdx((i) => (i - 1 + list.length) % list.length)} className="w-11 h-11 rounded-full grid place-items-center hover:bg-white/5 transition-colors" style={{ border: "1px solid rgba(243,238,216,0.18)" }} aria-label="Prev">
-                <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><Icon.ArrowRight /></span>
-              </button>
-              <button onClick={() => setIdx((i) => (i + 1) % list.length)} className="w-11 h-11 rounded-full grid place-items-center hover:bg-white/5 transition-colors" style={{ border: "1px solid rgba(243,238,216,0.18)" }} aria-label="Next">
-                <Icon.ArrowRight />
-              </button>
-            </div>
+          {/* Quote */}
+          <blockquote className="lg:col-span-8">
+            <div className="text-[var(--gold)] text-[80px] leading-none mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>“</div>
+            <p key={idx} className="text-[clamp(22px,2.6vw,36px)] leading-[1.3] text-balance" style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: "italic", color: "#f3eed8", animation: "fadeUp 700ms cubic-bezier(.2,.7,.2,1)" }}>
+              {cur.text}
+            </p>
+            <figcaption className="mt-8 flex items-center gap-4">
+              <div className="h-px w-10" style={{ background: "var(--gold)" }}/>
+              <div>
+                <div className="text-[15px]" style={{ fontFamily: "Inter, sans-serif", fontWeight: 500 }}>{cur.name}</div>
+                <div className="text-[12px] uppercase tracking-[0.25em] mt-1" style={{ color: "var(--gold)" }}>
+                  {cur.result} {cur.teacher && <span style={{ color: "rgba(243,238,216,0.4)" }}>· {cur.teacher.fullName.split(" ").slice(0,2).join(" ")}</span>}
+                </div>
+              </div>
+              {cur.pdf && (
+                <a href={cur.pdf} target="_blank" rel="noreferrer" className="ml-auto inline-flex items-center gap-2 px-4 h-9 rounded-full text-[11px] uppercase tracking-[0.22em] transition-colors hover:bg-[var(--gold)] hover:text-[#1a1408]" style={{ border: "1px solid var(--gold)", color: "var(--gold)" }}>
+                  Sertifikat <Icon.ArrowRight />
+                </a>
+              )}
+            </figcaption>
+          </blockquote>
+        </div>
+
+        <div className="mt-12 flex items-center justify-between">
+          <div className="flex gap-2">
+            {items.map((_, i) => (
+              <button key={i} onClick={() => setIdx(i)} aria-label={`Slide ${i+1}`}
+                className="h-1 rounded-full transition-all"
+                style={{ width: i === idx ? 36 : 16, background: i === idx ? "var(--gold)" : "rgba(243,238,216,0.25)" }} />
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button onClick={() => setIdx(i => (i - 1 + items.length) % items.length)} className="w-11 h-11 rounded-full grid place-items-center hover:bg-white/5 transition-colors" style={{ border: "1px solid rgba(243,238,216,0.18)" }} aria-label="Prev">
+              <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><Icon.ArrowRight /></span>
+            </button>
+            <button onClick={() => setIdx(i => (i + 1) % items.length)} className="w-11 h-11 rounded-full grid place-items-center hover:bg-white/5 transition-colors" style={{ border: "1px solid rgba(243,238,216,0.18)" }} aria-label="Next">
+              <Icon.ArrowRight />
+            </button>
           </div>
         </div>
       </div>
@@ -2859,7 +3015,7 @@ function App() {
             <Courses t={t} />
             <Teachers t={t} />
             <Why t={t} />
-            <Testimonials t={t} />
+            <Testimonials t={t} lang={lang} />
             <Pricing t={t} />
             <Contact t={t} lang={lang} />
           </>
