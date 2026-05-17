@@ -103,7 +103,7 @@ window.TEACHERS = [
     "firstName": "Sanjar",
     "father": "",
     "fullName": "Sanjar Usarov",
-    "photo": null,
+    "photo": "assets/Teachers Information/Geografiya va Tabiiy fan_USAROV_SANJAR/photo_2026-05-17_18-14-07.jpg",
     "certificates": [
       {
         "file": "68078edf27c5056ac80c38f4ce02bbe9.pdf",
@@ -170,7 +170,7 @@ window.TEACHERS = [
       {
         "name": "Gulbahor Boymaqova",
         "subject": "IELTS",
-        "score": "7.0",
+        "score": "7.5",
         "level": "C1",
         "percent": null,
         "issued": "24/JAN/2026",
@@ -289,7 +289,7 @@ window.TEACHERS = [
       }
     ],
     "studentCount": 10,
-    "topScore": "7.0",
+    "topScore": "7.5",
     "topLevel": "C1",
     "folder": "IELTS_Qo‘ldoshev_Fazliddin_Dilmurod o‘g‘li"
   },

@@ -266,7 +266,7 @@ const TRANSLATIONS = {
         { t: "Tajribali o'qituvchilar", d: "Har bir o'qituvchi xalqaro sertifikatga ega va doimiy malaka oshiradi." },
         { t: "Zamonaviy metodika", d: "Cambridge va Oxford materiallari, interaktiv platformalar." },
         { t: "Shaxsiy yondashuv", d: "Har bir talaba uchun individual o'quv rejasi va doimiy nazorat." },
-        { t: "Qulay joylashuv", d: "Toshkent shahar markazida, qulay transport tarmog'i bilan." },
+        { t: "Qulay joylashuv", d: "Bo'ka shahri markazida, qulay transport tarmog'i bilan." },
         { t: "Bepul sinov darsi", d: "Boshlamasdan oldin metodikamizni sinab ko'ring." },
         { t: "Kafolatlangan natija", d: "Belgilangan ballga yetmasangiz — kursni bepul takrorlaysiz." },
       ],
@@ -307,9 +307,9 @@ const TRANSLATIONS = {
       errName: "Ismingizni kiriting",
       errPhone: "Telefon raqam noto'g'ri",
       errCourse: "Kursni tanlang",
-      address: "Toshkent viloyati, Bo'ka tumani, Bo'ka Shahri",
-      hours: "Du–Sha: 09:00 — 20:00 · Yak: 10:00 — 16:00",
-      phoneNum: "+998 71 200 00 00",
+      address: "R673+GW2, Buka, Tashkent Region, Uzbekistan",
+      hours: "Du–Yak: 08:00 — 20:00",
+      phoneNum: "+998 94 684 79 49",
     },
     footer: {
       tagline: "Learn with Elegance, Achieve Excellence",
@@ -377,7 +377,7 @@ const TRANSLATIONS = {
         { t: "Опытные преподаватели", d: "Каждый имеет международный сертификат и постоянно повышает квалификацию." },
         { t: "Современная методика", d: "Материалы Cambridge и Oxford, интерактивные платформы." },
         { t: "Индивидуальный подход", d: "Персональный учебный план и постоянный контроль для каждого студента." },
-        { t: "Удобная локация", d: "В центре Ташкента, с удобной транспортной развязкой." },
+        { t: "Удобная локация", d: "В центре города Бука, с удобной транспортной развязкой." },
         { t: "Бесплатный пробный урок", d: "Попробуйте нашу методику до записи." },
         { t: "Гарантия результата", d: "Не достигли цели — повторите курс бесплатно." },
       ],
@@ -418,9 +418,9 @@ const TRANSLATIONS = {
       errName: "Введите имя",
       errPhone: "Неверный номер телефона",
       errCourse: "Выберите курс",
-      address: "Ташкент, Мирзо-Улугбекский район, Большой Шёлковый Путь 49",
-      hours: "Пн–Сб: 09:00 — 20:00 · Вс: 10:00 — 16:00",
-      phoneNum: "+998 71 200 00 00",
+      address: "R673+GW2, Бука, Ташкентская область, Узбекистан",
+      hours: "Пн–Вс: 08:00 — 20:00",
+      phoneNum: "+998 94 684 79 49",
     },
     footer: {
       tagline: "Learn with Elegance, Achieve Excellence",
@@ -488,7 +488,7 @@ const TRANSLATIONS = {
         { t: "Expert teachers", d: "Every teacher holds an international certification and trains continuously." },
         { t: "Modern methodology", d: "Cambridge and Oxford materials, interactive platforms." },
         { t: "Personal approach", d: "An individual study plan and continuous progress checks for every student." },
-        { t: "Convenient location", d: "In central Tashkent, with easy transport connections." },
+        { t: "Convenient location", d: "In central Buka town, with easy transport connections." },
         { t: "Free trial lesson", d: "Try our method before you enroll." },
         { t: "Outcome guarantee", d: "Don't hit your target? Retake the course free." },
       ],
@@ -529,9 +529,9 @@ const TRANSLATIONS = {
       errName: "Please enter your name",
       errPhone: "Invalid phone number",
       errCourse: "Please pick a course",
-      address: "Tashkent, Mirzo Ulugbek district, Buyuk Ipak Yoli 49",
-      hours: "Mon–Sat: 09:00 — 20:00 · Sun: 10:00 — 16:00",
-      phoneNum: "+998 71 200 00 00",
+      address: "R673+GW2, Buka, Tashkent Region, Uzbekistan",
+      hours: "Mon–Sun: 08:00 — 20:00",
+      phoneNum: "+998 94 684 79 49",
     },
     footer: {
       tagline: "Learn with Elegance, Achieve Excellence",
@@ -678,6 +678,15 @@ window.CountUp = CountUp;
 window.Eyebrow = Eyebrow;
 window.LogoMark = LogoMark;
 window.Icon = Icon;
+
+// Real ELEGANT social profiles. Used by both the contact-form social row and the footer.
+const SOCIAL_LINKS = [
+  { I: Icon.Instagram, href: "https://www.instagram.com/elegant_edu_n1?igsh=MTk4bWV2dWdmZ2V5Zg==", label: "Instagram" },
+  { I: Icon.Telegram,  href: "https://t.me/elegant_edu_uz", label: "Telegram" },
+  { I: Icon.YouTube,   href: "https://www.youtube.com/@elegant_edu", label: "YouTube" },
+  { I: Icon.Facebook,  href: "https://www.facebook.com/elegant.edu.uz", label: "Facebook" },
+];
+window.SOCIAL_LINKS = SOCIAL_LINKS;
 
 /* ===== sections-top.jsx ===== */
 // Top-level page sections. Depend on globals: React, Reveal, CountUp, Eyebrow, LogoMark, Icon, TRANSLATIONS
@@ -1026,7 +1035,7 @@ function HeroVisual() {
         <div className="absolute left-6 right-6 bottom-6 flex items-end justify-between text-white">
           <div>
             <div className="text-[10px] uppercase tracking-[0.3em] opacity-80">{ {uz:"Joriy guruh", ru:"Текущая группа", en:"Current cohort"}[(window.__currentLang||"uz")] }</div>
-            <div className="mt-1 text-[20px]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>IELTS · Spring 2026</div>
+            <div className="mt-1 text-[20px]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>IELTS 2026-2027</div>
           </div>
           <div className="text-right">
             <div className="text-[10px] uppercase tracking-[0.3em] opacity-80">Avg.</div>
@@ -1046,7 +1055,7 @@ function HeroVisual() {
           </div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: "var(--muted)" }}>{ {uz:"Eng yuqori",ru:"Лучший",en:"Top"}[(window.__currentLang||"uz")] }</div>
-            <div className="text-[15px]" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>IELTS 8.5</div>
+            <div className="text-[15px]" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>IELTS 7.5</div>
           </div>
         </div>
       </div>
@@ -1062,7 +1071,7 @@ function HeroVisual() {
           </div>
           <div>
             <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: "var(--muted)" }}>{ {uz:"Qabul",ru:"Приём",en:"Admits"}[(window.__currentLang||"uz")] }</div>
-            <div className="text-[15px]" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>NYU · Harvard</div>
+            <div className="text-[15px]" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--fg)" }}>Top University</div>
           </div>
         </div>
       </div>
@@ -1109,26 +1118,27 @@ function Stats({ t }) {
 
 // =============== COURSES ===============
 const COURSE_VISUAL = {
+  // Subject-appropriate, locally hosted course photos (assets/courses/).
   // English / international exams
-  IELTS:      { photo: "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&q=80" },
-  SAT:        { photo: "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800&q=80" },
-  PreSAT:     { photo: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&q=80" },
-  CEFR:       { photo: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80" },
-  General:    { photo: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80" },
+  IELTS:      { photo: "assets/courses/IELTS.jpg" },
+  SAT:        { photo: "assets/courses/SAT.jpg" },
+  PreSAT:     { photo: "assets/courses/PreSAT.jpg" },
+  CEFR:       { photo: "assets/courses/CEFR.jpg" },
+  General:    { photo: "assets/courses/General.jpg" },
   // DTM / national subjects
-  MathDTM:    { photo: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80" },
-  Bio:        { photo: "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=800&q=80" },
-  Chem:       { photo: "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?w=800&q=80" },
-  History:    { photo: "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=800&q=80" },
-  OnaTili:    { photo: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80" },
-  Geo:        { photo: "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&q=80" },
-  Nature:     { photo: "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=800&q=80" },
-  Milliy:     { photo: "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=800&q=80" },
+  MathDTM:    { photo: "assets/courses/MathDTM.jpg" },
+  Bio:        { photo: "assets/courses/Bio.jpg" },
+  Chem:       { photo: "assets/courses/Chem.jpg" },
+  History:    { photo: "assets/courses/History.jpg" },
+  OnaTili:    { photo: "assets/courses/OnaTili.jpg" },
+  Geo:        { photo: "assets/courses/Geo.jpg" },
+  Nature:     { photo: "assets/courses/Nature.jpg" },
+  Milliy:     { photo: "assets/courses/Milliy.jpg" },
   // School entry programs
-  Prezident:  { photo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80" },
-  Ixtisos:    { photo: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&q=80" },
-  AlBeruniy:  { photo: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80" },
-  AlXorazmiy: { photo: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80" },
+  Prezident:  { photo: "assets/courses/Prezident.jpg" },
+  Ixtisos:    { photo: "assets/courses/Ixtisos.jpg" },
+  AlBeruniy:  { photo: "assets/courses/AlBeruniy.jpg" },
+  AlXorazmiy: { photo: "assets/courses/AlXorazmiy.jpg" },
 };
 
 function Courses({ t }) {
@@ -1267,7 +1277,7 @@ function Teachers({ t }) {
                     <div className="p-6 flex flex-col gap-6 flex-1">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <div className="text-[28px] leading-none" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--gold)", fontWeight: 500 }}>{tch.studentCount}</div>
+                          <div className="text-[28px] leading-none" style={{ fontFamily: "'Cormorant Garamond', serif", color: "var(--gold)", fontWeight: 500 }}>100+</div>
                           <div className="mt-2 text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>{labelStudents}</div>
                         </div>
                         <div style={{ borderLeft: "1px solid var(--hairline)", paddingLeft: 16 }}>
@@ -1543,27 +1553,31 @@ function Contact({ t, lang }) {
 
           <Reveal delay={320}>
             <div className="mt-10 space-y-5" style={{ fontFamily: "Inter, sans-serif" }}>
-              <ContactRow icon={<Icon.Pin />} label={t.contact.address} />
-              <ContactRow icon={<Icon.Phone />} label={t.contact.phoneNum} />
+              <ContactRow icon={<Icon.Pin />} label={t.contact.address} href={"https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(t.contact.address)} />
+              <ContactRow icon={<Icon.Phone />} label={t.contact.phoneNum} href={"tel:" + t.contact.phoneNum.replace(/\s+/g,'')} />
               <ContactRow icon={<Icon.Clock />} label={t.contact.hours} />
             </div>
           </Reveal>
 
-          {/* Map placeholder */}
+          {/* Map — clickable, opens Google Maps */}
           <Reveal delay={400}>
-            <div className="mt-8 rounded-2xl overflow-hidden relative aspect-[16/9]" style={{ border: "1px solid var(--hairline)", background: "linear-gradient(135deg, var(--mesh1), var(--mesh2))" }}>
-              <div className="absolute inset-0" style={{
-                backgroundImage: "linear-gradient(var(--hairline) 1px, transparent 1px), linear-gradient(90deg, var(--hairline) 1px, transparent 1px)",
-                backgroundSize: "32px 32px", opacity: 0.6,
-              }}/>
-              <div className="absolute inset-0 grid place-items-center">
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur" style={{ background: "var(--card)", border: "1px solid var(--gold)" }}>
-                  <span style={{ color: "var(--gold)" }}><Icon.Pin /></span>
-                  <span className="text-[12px]" style={{ color: "var(--fg)", fontFamily: "Inter, sans-serif" }}>ELEGANT · Tashkent</span>
-                </div>
+            <a href={"https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(t.contact.address)} target="_blank" rel="noreferrer" className="group mt-8 block rounded-2xl overflow-hidden relative aspect-[16/9]" style={{ border: "1px solid var(--hairline)" }}>
+              <iframe
+                title="ELEGANT Buka"
+                src="https://www.google.com/maps?q=R673%2BGW2%20Buka%20Tashkent%20Region%20Uzbekistan&output=embed"
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                style={{ border: 0, filter: "grayscale(0.2) contrast(0.95)" }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <div className="absolute left-3 top-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur" style={{ background: "rgba(7,13,28,0.7)", border: "1px solid var(--gold)" }}>
+                <span style={{ color: "var(--gold)" }}><Icon.Pin /></span>
+                <span className="text-[11px] uppercase tracking-[0.22em]" style={{ color: "#f3eed8", fontFamily: "Inter, sans-serif" }}>ELEGANT · Bo'ka</span>
               </div>
-              <div className="absolute left-3 top-3 text-[10px] uppercase tracking-[0.25em]" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>{/* REPLACE with embedded Google Map */}Map preview</div>
-            </div>
+              <div className="absolute bottom-3 right-3 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-[0.22em] inline-flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "var(--gold)", color: "#1a1408" }}>
+                Open in Maps <Icon.ArrowRight />
+              </div>
+            </a>
           </Reveal>
         </div>
 
@@ -1599,8 +1613,8 @@ function Contact({ t, lang }) {
 
               <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
                 <div className="text-[12px] flex items-center gap-3" style={{ color: "var(--muted)", fontFamily: "Inter, sans-serif" }}>
-                  {[Icon.Instagram, Icon.Telegram, Icon.YouTube, Icon.Facebook].map((I, k) => (
-                    <a key={k} href="#" className="w-9 h-9 grid place-items-center rounded-full hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors border" style={{ borderColor: "var(--hairline)" }}>
+                  {SOCIAL_LINKS.map(({ I, href, label }, k) => (
+                    <a key={k} href={href} target="_blank" rel="noreferrer" aria-label={label} className="w-9 h-9 grid place-items-center rounded-full hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors border" style={{ borderColor: "var(--hairline)" }}>
                       <I />
                     </a>
                   ))}
@@ -1617,12 +1631,14 @@ function Contact({ t, lang }) {
   );
 }
 
-function ContactRow({ icon, label }) {
+function ContactRow({ icon, label, href }) {
+  const Tag = href ? "a" : "div";
+  const extra = href ? { href, target: "_blank", rel: "noreferrer", className: "flex items-start gap-4 text-[14px] hover:text-[var(--gold)] transition-colors" } : { className: "flex items-start gap-4 text-[14px]" };
   return (
-    <div className="flex items-start gap-4 text-[14px]" style={{ color: "var(--fg)" }}>
+    <Tag {...extra} style={{ color: "var(--fg)" }}>
       <span className="mt-0.5 w-8 h-8 grid place-items-center rounded-full shrink-0" style={{ border: "1px solid var(--gold)", color: "var(--gold)" }}>{icon}</span>
       <span style={{ lineHeight: 1.5, color: "var(--muted)" }}>{label}</span>
-    </div>
+    </Tag>
   );
 }
 
@@ -1637,8 +1653,8 @@ function Footer({ t, lang }) {
             {t.footer.tagline}
           </p>
           <div className="mt-6 flex items-center gap-3">
-            {[Icon.Instagram, Icon.Telegram, Icon.YouTube, Icon.Facebook].map((I, k) => (
-              <a key={k} href="#" className="w-9 h-9 grid place-items-center rounded-full hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors border" style={{ borderColor: "rgba(243,238,216,0.2)" }}>
+            {SOCIAL_LINKS.map(({ I, href, label }, k) => (
+              <a key={k} href={href} target="_blank" rel="noreferrer" aria-label={label} className="w-9 h-9 grid place-items-center rounded-full hover:text-[var(--gold)] hover:border-[var(--gold)] transition-colors border" style={{ borderColor: "rgba(243,238,216,0.2)" }}>
                 <I />
               </a>
             ))}
@@ -2472,7 +2488,7 @@ function TeacherPage({ teacher, t, lang }) {
             </h1>
             <Reveal delay={900}>
               <div className="mt-10 flex flex-wrap gap-6">
-                <Stat label={labelStudents} value={tch.studentCount} />
+                <Stat label={labelStudents} value="100+" />
                 <Stat label={labelCerts} value={tch.certificates.length} />
                 <Stat label={labelTop} value={tch.topScore || tch.topLevel || "—"} highlight />
               </div>
